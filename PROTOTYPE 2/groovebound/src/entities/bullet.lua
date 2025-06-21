@@ -18,7 +18,7 @@ local Bullet = {}
 -- @param size - Size of the bullet
 -- @param lifetime - Lifetime in seconds
 -- @return A new bullet object
-function Bullet.new(x, y, dx, dy, damage, speed, size, lifetime)
+function Bullet.new(x, y, dx, dy, damage, speed, size, lifetime, shape)
   -- Debug logging if enabled
   if Settings.debug.enabled and Settings.debug.files.bullet then
     if Debug and Debug.log then
@@ -36,7 +36,8 @@ function Bullet.new(x, y, dx, dy, damage, speed, size, lifetime)
     life = lifetime or Settings.weapons.base_weapon.bullet_lifetime, -- Lifetime in seconds
     size = size or Settings.weapons.base_weapon.bullet_size,     -- Size of the bullet
     dead = false,          -- Whether the bullet is dead
-    color = Settings.weapons.base_weapon.bullet_color
+    color = Settings.weapons.base_weapon.bullet_color,
+    shape = shape or "rectangle"
   }
   
   -- Set the metatable for the bullet object
@@ -90,12 +91,14 @@ function Bullet:draw()
   -- Save current graphics state
   love.graphics.push("all")
   
-  -- Draw bullet as a yellow rectangle
-  love.graphics.setColor(self.color) -- Yellow color
-  
-  -- Draw centered on bullet position
+  love.graphics.setColor(self.color)
+
   local halfSize = self.size / 2
-  love.graphics.rectangle("fill", self.x - halfSize, self.y - halfSize, self.size, self.size)
+  if self.shape == "circle" then
+    love.graphics.circle("fill", self.x, self.y, halfSize)
+  else
+    love.graphics.rectangle("fill", self.x - halfSize, self.y - halfSize, self.size, self.size)
+  end
   
   -- Restore graphics state
   love.graphics.pop()

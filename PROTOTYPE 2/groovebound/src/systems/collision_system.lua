@@ -46,6 +46,22 @@ function CollisionSystem:checkRectCollision(x1, y1, w1, h1, x2, y2, w2, h2)
               top1 > bottom2)
 end
 
+-- Check collision between a circle and a rectangle
+-- circle at (cx,cy) radius r; rectangle centered at (rx,ry) with width rw and height rh
+function CollisionSystem:checkCircleRect(cx, cy, r, rx, ry, rw, rh)
+  local dx = math.abs(cx - rx)
+  local dy = math.abs(cy - ry)
+
+  if dx > (rw/2 + r) then return false end
+  if dy > (rh/2 + r) then return false end
+
+  if dx <= rw/2 then return true end
+  if dy <= rh/2 then return true end
+
+  local cornerDist = (dx - rw/2)^2 + (dy - rh/2)^2
+  return cornerDist <= r^2
+end
+
 -- Check if two circles are colliding
 -- @param x1, y1 - Center of first circle
 -- @param r1 - Radius of first circle
@@ -94,11 +110,17 @@ function CollisionSystem:checkBulletEnemyCollision(bullet, enemy)
     return false
   end
   
-  -- Check collision between bullet's rectangle and enemy's rectangle
-  return self:checkRectCollision(
-    bullet.x, bullet.y, bullet.size, bullet.size,
-    enemy.x, enemy.y, enemy.rectSize, enemy.rectSize
-  )
+  if bullet.shape == "circle" then
+    return self:checkCircleRect(
+      bullet.x, bullet.y, bullet.size/2,
+      enemy.x, enemy.y, enemy.rectSize, enemy.rectSize
+    )
+  else
+    return self:checkRectCollision(
+      bullet.x, bullet.y, bullet.size, bullet.size,
+      enemy.x, enemy.y, enemy.rectSize, enemy.rectSize
+    )
+  end
 end
 
 -- Check collision between player and XP gem

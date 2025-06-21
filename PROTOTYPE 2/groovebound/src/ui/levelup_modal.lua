@@ -105,10 +105,12 @@ function LevelUpModal:draw()
   
   -- Get screen dimensions
   local screenWidth, screenHeight = love.graphics.getDimensions()
-  
-  -- Calculate modal position (centered)
-  local x = (screenWidth - self.width) / 2
-  local y = (screenHeight - self.height) / 2
+
+  local modalWidth = math.min(self.width, screenWidth - 40)
+  local modalHeight = math.min(self.height, screenHeight - 40)
+
+  local x = (screenWidth - modalWidth) / 2
+  local y = (screenHeight - modalHeight) / 2
   
   -- Draw semi-transparent background overlay
   love.graphics.setColor(0, 0, 0, 0.7)
@@ -116,27 +118,27 @@ function LevelUpModal:draw()
   
   -- Draw modal background
   love.graphics.setColor(0.2, 0.2, 0.25, 0.95)
-  love.graphics.rectangle("fill", x, y, self.width, self.height, 10, 10)
+  love.graphics.rectangle("fill", x, y, modalWidth, modalHeight, 10, 10)
   love.graphics.setColor(0.5, 0.5, 0.6, 1)
   love.graphics.setLineWidth(2)
-  love.graphics.rectangle("line", x, y, self.width, self.height, 10, 10)
+  love.graphics.rectangle("line", x, y, modalWidth, modalHeight, 10, 10)
   
   -- Draw title
   love.graphics.setColor(1, 0.8, 0.2, 1)
   love.graphics.setFont(love.graphics.newFont(32))
   local titleWidth = love.graphics.getFont():getWidth(self.title)
-  love.graphics.print(self.title, x + (self.width - titleWidth) / 2, y + 30)
+  love.graphics.print(self.title, x + (modalWidth - titleWidth) / 2, y + 30)
   
   -- Draw subtitle
   love.graphics.setColor(0.9, 0.9, 0.9, 1)
   love.graphics.setFont(love.graphics.newFont(18))
   local subtitle = "Choose an upgrade:"
   local subtitleWidth = love.graphics.getFont():getWidth(subtitle)
-  love.graphics.print(subtitle, x + (self.width - subtitleWidth) / 2, y + 80)
+  love.graphics.print(subtitle, x + (modalWidth - subtitleWidth) / 2, y + 80)
   
   -- Calculate card positions
   local totalCardsWidth = (#self.options * self.cardWidth) + ((#self.options - 1) * self.cardSpacing)
-  local startX = x + (self.width - totalCardsWidth) / 2
+  local startX = x + (modalWidth - totalCardsWidth) / 2
   local cardY = y + 120
   
   -- Draw each option card
@@ -207,12 +209,14 @@ function LevelUpModal:mousepressed(x, y, button)
   
   -- Calculate modal position
   local screenWidth, screenHeight = love.graphics.getDimensions()
-  local modalX = (screenWidth - self.width) / 2
-  local modalY = (screenHeight - self.height) / 2
+  local modalWidth = math.min(self.width, screenWidth - 40)
+  local modalHeight = math.min(self.height, screenHeight - 40)
+  local modalX = (screenWidth - modalWidth) / 2
+  local modalY = (screenHeight - modalHeight) / 2
   
   -- Calculate card positions
   local totalCardsWidth = (#self.options * self.cardWidth) + ((#self.options - 1) * self.cardSpacing)
-  local startX = modalX + (self.width - totalCardsWidth) / 2
+  local startX = modalX + (modalWidth - totalCardsWidth) / 2
   local cardY = modalY + 120
   
   -- Check each card
