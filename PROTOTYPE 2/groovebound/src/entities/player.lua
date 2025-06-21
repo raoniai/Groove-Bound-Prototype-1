@@ -262,14 +262,15 @@ function Player:fireWeapon(weapon)
     
     -- Create the bullet with calculated direction
     local bullet = Bullet.new(
-      self.x, 
-      self.y, 
-      dirX, 
+      self.x,
+      self.y,
+      dirX,
       dirY,
       weapon.damage,
       weapon.bulletSpeed,
       weapon.bulletSize,
-      weapon.bulletLifetime
+      weapon.bulletLifetime,
+      "circle"
     )
     
     -- Set bullet color if specified
@@ -309,9 +310,12 @@ function Player:draw()
   -- Set color with all effects applied
   love.graphics.setColor(r, g, b, a)
   
-  -- Draw player as a rectangle
   local halfSize = self.rectSize / 2
-  love.graphics.rectangle("fill", self.x - halfSize, self.y - halfSize, self.rectSize, self.rectSize)
+  love.graphics.polygon("fill",
+    self.x, self.y - halfSize,
+    self.x - halfSize, self.y + halfSize,
+    self.x + halfSize, self.y + halfSize
+  )
   
   -- Draw direction indicator (line pointing in aim direction)
   love.graphics.setColor(0, 1, 0, a) -- Green indicator
@@ -420,7 +424,7 @@ end
 -- @return True if weapon was added, false if inventory is full
 function Player:addWeapon(weapon)
   -- Check if there's room in the inventory
-  if #self.weapons >= 4 then
+  if #self.weapons < Settings.globals.max_weapon_slots then
     -- Get default values for new weapons
     local defaults = Settings.weapons.base_weapon
     
@@ -438,7 +442,7 @@ function Player:addWeapon(weapon)
     table.insert(self.weapons, weapon)
     return true
   end
-  
+
   return false
 end
 
