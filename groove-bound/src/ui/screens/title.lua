@@ -27,8 +27,8 @@ function TitleScreen:_layout()
     widgets.Button({
       label = "Play", x = x, y = y, w = bw, h = bh,
       on_press = function()
-        -- Run screen lands in Phase 1; log so the click visibly works.
-        self.app.log.info("state", "Play pressed (run screen arrives in Phase 1)")
+        local RunScreen = require("src.ui.screens.run")
+        self.app.states:push(RunScreen(self.app))
       end,
     }),
     widgets.Button({
@@ -65,6 +65,23 @@ end
 
 function TitleScreen:keypressed(key)
   return self.button_list:keypressed(key)
+end
+
+function TitleScreen:gamepadpressed(_, button)
+  local Input = require("src.game.input")
+  if Input.is_gamepad_action(button, "confirm") then
+    self.button_list:confirm()
+    return true
+  end
+  if button == "dpup" then
+    self.button_list:move_focus(-1)
+    return true
+  end
+  if button == "dpdown" then
+    self.button_list:move_focus(1)
+    return true
+  end
+  return false
 end
 
 function TitleScreen:mousemoved(x, y)
