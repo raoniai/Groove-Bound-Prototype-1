@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LuaJIT and luacheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y luajit lua-check
+
+      - name: Lint
+        working-directory: groove-bound
+        run: luacheck src main.lua conf.lua tests || true # advisory until baseline is clean
+
+      - name: Unit tests
+        working-directory: groove-bound
+        run: luajit tests/run.lua

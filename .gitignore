@@ -1,0 +1,17 @@
+# OS droppings
+.DS_Store
+Thumbs.db
+
+# Logs and crash dumps
+logs/
+crash_*.log
+debug_output.txt
+
+# Build artifacts
+dist/
+*.love
+
+# Editor
+.vscode/
+.idea/
+*.swp
